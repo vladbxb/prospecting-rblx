@@ -1,5 +1,5 @@
 # Auto farming script for Roblox Prospecting
-Python script made with pyautogui that automates shoveling and panning by simulating user input.
+Python script that automates shoveling and panning by simulating user input.
 ## Game link
 [Prospecting! 💎](https://www.roblox.com/games/129827112113663/Prospecting)
 ## How to use
@@ -10,7 +10,7 @@ Python script made with pyautogui that automates shoveling and panning by simula
 1. The user needs to alt-tab to Roblox in a 2 second timespan after running the script.
 2. The user stats need to be inserted manually into the program.
 ## How does it work?
-Some timers are deduced from the user stats. The program simulates holding click and keypresses with pyautogui and pydirectinput. The algorithm is as follows:
+Some timers are deduced from the user stats. The program simulates holding click and keypresses with pydirectinput. The algorithm is as follows:
 - Assume player is on the shore and facing the water, with the correct stats inserted
 - Equip pan and fill it through shoveling while always hitting the perfect spot, until pan is full
 - Go in the water and empty the pan
