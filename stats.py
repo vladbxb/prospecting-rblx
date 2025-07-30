@@ -1,0 +1,96 @@
+"""
+Module for acquiring stats, given the in-game window
+for stats is shown on screen
+"""
+
+from re import split
+from time import sleep
+from pytesseract import image_to_string
+from PIL import ImageGrab
+from pygetwindow import getActiveWindow
+import gui_manipulation as gm
+
+
+def is_percentage(number: str) -> bool:
+    """
+    Checks whether the string is a percentage 
+    (either in decimal format or with a percentage sign at the end)
+    """
+    return number.isnumeric() or (number[:-1].isnumeric() and number[-1] == '%')
+
+def is_stat(stat) -> bool:
+    """
+    Checks whether the string is a predefined stat in the game.
+    This is used for catching possibly bad input data.
+    """
+    stat_names = ['luck', 'dig strength', 'capacity', 'dig speed', 
+                  'toughness', 'shake strength', 'shake speed', 'size boost']
+    return stat.lower() in stat_names or is_percentage(stat)
+
+def get_pairs(im) -> list[list]:
+    """
+    Returns the read image data into a list of lists format.
+    """
+    lines = image_to_string(im, lang="eng", config="--psm 11").split('\n')
+    data = [x for x in lines if ':' in x]
+    pairs = [split(r': ', x) for x in data]
+    return pairs
+
+def generate_dict(pairs) -> dict:
+    """
+    Generates the dictionary based off of a list of lists of length 2.
+    """
+    stats = dict()
+    for pair in pairs:
+        if len(pair) == 2 and is_stat(pair[0]) and is_stat(pair[1]):
+            x = pair[0].lower()
+            y = pair[1] if pair[1][-1] != '%' else str(int(pair[1][:-1]) / 100)
+            stats[x] = float(y)
+    return stats
+
+def acquired_stats(stats) -> bool:
+    """
+    Checks whether all of the required stats are present in the read stats.
+    """
+    required_stat_names = ['dig strength', 'capacity', 'dig speed', 'shake strength', 'shake speed']
+    for stat in required_stat_names:
+        if stat not in stats.keys():
+            print(f"missing stat: {stat}")
+            return False
+    return True
+
+def read_stats() -> dict:
+    """
+    Reads the Prospecting stats from the Roblox Player window,
+    assuming that they are present on screen
+    """
+    window_size = getActiveWindow()
+
+    # Make screenshot with ImageGrab
+    im = ImageGrab.grab(bbox=(window_size.left, window_size.top,
+                              window_size.right, window_size.bottom))
+
+    # Read text with pytesseract and reformat the data
+    pairs = get_pairs(im)
+
+    stats = generate_dict(pairs)
+
+    print(f"stats.keys: {stats.keys()}")
+    print(f"read stats: {stats}")
+
+    if not acquired_stats(stats):
+        raise RuntimeError("All of the needed stats have not been read successfully!")
+
+    return stats
+
+def get_stats() -> dict:
+    """
+    Attempts to read stats from the game window, and
+    convert them into the expected format
+    """
+    gm.switch_to_roblox_player()
+    gm.open_stats_window()
+    sleep(1)
+    stats = read_stats()
+    gm.exit_stats_window()
+    return stats
