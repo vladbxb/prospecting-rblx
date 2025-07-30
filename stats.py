@@ -6,6 +6,7 @@ for stats is shown on screen
 from re import split
 from time import sleep
 from pytesseract import image_to_string
+import easyocr
 from PIL import ImageGrab
 from pygetwindow import getActiveWindow
 import cv2
@@ -34,13 +35,16 @@ def image_to_string_preproc(im) -> str:
     Preprocesses image with binarization
     to improve readings.
     """
-    img_cv = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
-    gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
-    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    if np.mean(binary) > 127:
-        binary = cv2.bitwise_not(binary)
-    img_rgb = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
-    return image_to_string(img_rgb, lang="eng", config="--psm 11")
+    # img_cv = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
+    # gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
+    # _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    # if np.mean(binary) > 127:
+    #     binary = cv2.bitwise_not(binary)
+    # img_rgb = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
+    reader = easyocr.Reader(['en']) # this needs to run only once to load the model into memory
+    result = reader.readtext(im)
+    return result
+    # return image_to_string(img_rgb, lang="eng", config="--psm 11")
 
 def get_pairs(im) -> list[list]:
     """
