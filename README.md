@@ -4,7 +4,8 @@ Python script that automates shoveling and panning by simulating user input.
 [Prospecting! 💎](https://www.roblox.com/games/129827112113663/Prospecting)
 ## How to use
 1. Go to a shore, facing the water while being pretty close to it, while holding nothing and while on the ground (and not in the water, this is important).
-2. Then, run `prospecting.py`!
+2. Enable UI Navigation (if it's not turned on already) in settings.
+3. Then, run `prospecting.py`!
 ## Caveats
 The way the script reads stats is a bit finnicky. Keep retrying until you start digging! That's when you know it's working. (*PRO TIP: start the script in totem areas, it works!*)
 ## How does it work?
