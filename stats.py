@@ -8,6 +8,8 @@ from time import sleep
 from pytesseract import image_to_string
 from PIL import ImageGrab
 from pygetwindow import getActiveWindow
+import cv2
+import numpy as np
 import gui_manipulation as gm
 
 
@@ -27,11 +29,24 @@ def is_stat(stat) -> bool:
                   'toughness', 'shake strength', 'shake speed', 'size boost']
     return stat.lower() in stat_names or is_percentage(stat)
 
+def image_to_string_preproc(im) -> str:
+    """
+    Preprocesses image with binarization
+    to improve readings.
+    """
+    img_cv = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
+    gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
+    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    if np.mean(binary) > 127:
+        binary = cv2.bitwise_not(binary)
+    img_rgb = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
+    return image_to_string(img_rgb, lang="eng", config="--psm 11")
+
 def get_pairs(im) -> list[list]:
     """
     Returns the read image data into a list of lists format.
     """
-    lines = image_to_string(im, lang="eng", config="--psm 11").split('\n')
+    lines = image_to_string_preproc(im).split('\n')
     data = [x for x in lines if ':' in x]
     pairs = [split(r': ', x) for x in data]
     return pairs
