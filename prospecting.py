@@ -21,7 +21,7 @@ from stats import get_stats
 
 # this should be increased on laggy/unstable connections, and decreased otherwise
 # lower if farming seems inefficient
-ERROR_MARGIN = 1
+ERROR_MARGIN = 0
 
 INIT_COOLDOWN = 2
 
