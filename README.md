@@ -12,7 +12,7 @@ Python script that automates shoveling and panning by simulating user input.
 - **For GNU/Linux users**, [Sober](https://sober.vinegarhq.org/) should be used. As of writing, this is the most reliable way of playing Roblox on GNU/Linux.
 - The way the script reads stats is a bit finnicky. Keep retrying until you start digging! That's when you know it's working.
 - Starting the script in totem areas will work, however after the totem ends, the duration of the tasks will be out of sync, so restarting the script is needed in most cases.
-- The values provided as constants in the `prospecting.py` file are unfortunately not good for any framerate. These should be tweaked according to the performance of your hardware. **It is recommended to run the lowest graphics from Roblox settings**, as well turning off any additional effects from the Settings button on the top bar of the Prospecting game, while **enabling the Low Graphics mode**.
+- The values provided as constants in the `constants.py` file are unfortunately not good for every framerate. These should be tweaked according to the performance of your hardware. **It is recommended to run the lowest graphics from Roblox settings**, as well turning off any additional effects from the Settings button on the top bar of the Prospecting game, while **enabling the Low Graphics mode**.
 ## How does it work?
 Some timers are deduced from the user stats. The script simulates holding click and keypresses, calculates window coordinates and converts the stats' image data into text. The algorithm is as follows:
 - Assume player is on the shore and facing the water
@@ -22,6 +22,6 @@ Some timers are deduced from the user stats. The script simulates holding click 
 - Go back to the shore and repeat until the script is stopped (as of writing, either by switching to another window or CTRL+C in the terminal)
 ## The timing seems a bit off. It never touches green or empties the pan!
 - Unfortunately, the game has some base cooldowns/time values that we don't know and are also tied to the game's framerate. Through guesswork, I kinda found some values that work for calculating these durations based on the stats you have (so that it works with any items that you equip), and the framerate I tested the script with.
-- In this case, try adjusting the constant values located in the prospecting.py file at the top. You may find better values than I did, and it's pretty easy to iterate and find the sweet spot (this should take you around 5 minutes)
+- In this case, try adjusting the constant values located in the `constants.py` file. You may find better values than I did, and it's pretty easy to iterate and find the sweet spot (this should take you around 5 minutes)
 ## Will I get banned?
 The author of this script takes no accountability for what happens to the users' accounts after using this script on Roblox Prospecting. However, since it's simulating real computer input ~~and given Roblox's moderation~~, the chances of getting banned with this are slim. But take this with a grain of salt!
