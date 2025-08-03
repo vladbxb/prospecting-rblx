@@ -10,11 +10,12 @@ from os import _exit
 from sys import exit as sys_exit
 from threading import Thread
 from time import sleep
-import mouse
-import keyboard
-from pygetwindow import getActiveWindow, getActiveWindowTitle
+# import mouse
+# import keyboard
+import pynput
+from pywinctl import getActiveWindow, getActiveWindowTitle
 from gui_manipulation import switch_to_roblox_player
-from stats import get_stats
+from stats import get_stats, get_game_name
 
 
 # COOLDOWNS (magic values)
@@ -25,9 +26,9 @@ ERROR_MARGIN = 0
 
 INIT_COOLDOWN = 2
 
-SHAKE_DURATION_BASE = 0.35
+SHAKE_DURATION_BASE = 0.4
 
-EMPTYING_START = 0.2
+EMPTYING_START = 0.5
 EMPTYING_COOLDOWN = 2
 
 FILL_BASE = 0.65
@@ -36,6 +37,12 @@ FILL_ANIM_BASE = 1.6
 
 WALK_IN_WATER = 0.5
 WALK_TO_SHORE = 0.5
+
+# Mouse and keyboard for pynput
+
+mouse = pynput.mouse.Controller()
+keyboard = pynput.keyboard.Controller()
+
 
 def fill_pan(dig_strength, dig_speed, capacity) -> None:
     """
@@ -48,9 +55,9 @@ def fill_pan(dig_strength, dig_speed, capacity) -> None:
     print("Filling pan...")
     for i in range(times_to_fill):
         print(f"Filled {i + 1} times.")
-        mouse.press()
+        mouse.press(pynput.mouse.Button.left)
         sleep(fill_touch_green)
-        mouse.release()
+        mouse.release(pynput.mouse.Button.left)
         sleep(fill_success_anim)
 
 def empty_pan(shake_strength, shake_speed, capacity) -> None:
@@ -61,11 +68,11 @@ def empty_pan(shake_strength, shake_speed, capacity) -> None:
     emptying_duration = SHAKE_DURATION_BASE / shake_speed
     emptying_pan = emptying_duration * emptying_clicks + ERROR_MARGIN
     print("Emptying pan...")
-    mouse.click()
+    mouse.click(pynput.mouse.Button.left)
     sleep(EMPTYING_START)
-    mouse.press()
+    mouse.press(pynput.mouse.Button.left)
     sleep(emptying_pan)
-    mouse.release()
+    mouse.release(pynput.mouse.Button.left)
     sleep(EMPTYING_COOLDOWN)
 
 def init_farm() -> None:
@@ -84,7 +91,7 @@ def init_farm() -> None:
     active_window = getActiveWindow()
     window_center = ((active_window.left + active_window.width) // 2,
                      (active_window.top + active_window.height) // 2)
-    mouse.move(window_center[0], window_center[1], absolute=True)
+    mouse.position = (window_center[0], window_center[1])
 
     # Equip pan
     print("Started farm.")
@@ -113,9 +120,10 @@ def focus_change() -> None:
     """
     Stops the script when Roblox window is not focused anymore.
     """
+    game_name = get_game_name()
     while True:
         window_title = getActiveWindowTitle()
-        if window_title != "Roblox":
+        if window_title != game_name:
             break
         sleep(1)
     print("Window focus change detected. Stopping script...")
@@ -129,7 +137,8 @@ def main() -> None:
     Thread(target=focus_change, daemon=True).start()
     s = get_stats()
     # Equip pan
-    keyboard.press_and_release('1')
+    keyboard.press('1')
+    keyboard.release('1')
     while True:
         sleep(1)
         farm(s['dig strength'], s['dig speed'], s['shake strength'],

@@ -5,9 +5,10 @@ for stats is shown on screen
 
 from re import split
 from time import sleep
+from sys import platform
 from pytesseract import image_to_string
 from PIL import ImageGrab
-from pygetwindow import getActiveWindow
+from pywinctl import getActiveWindow
 import cv2
 import numpy as np
 import gui_manipulation as gm
@@ -90,10 +91,8 @@ def read_stats() -> dict:
 
     stats = generate_dict(pairs)
 
-    print(f"stats.keys: {stats.keys()}")
-    print(f"read stats: {stats}")
-
     if not acquired_stats(stats):
+        gm.exit_stats_window()
         raise RuntimeError("All of the needed stats have not been read successfully!")
 
     return stats
@@ -109,3 +108,14 @@ def get_stats() -> dict:
     stats = read_stats()
     gm.exit_stats_window()
     return stats
+
+def get_game_name() -> str | None:
+    GAME_NAME = None
+
+    if platform == "linux" or platform == "linux2":
+        GAME_NAME = "Sober"
+    elif platform == "darwin":
+        GAME_NAME = "Roblox"
+    elif platform == "win32":
+        GAME_NAME = "Roblox"
+    return GAME_NAME

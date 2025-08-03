@@ -3,20 +3,24 @@ Module for manipulating the game's GUI elements.
 """
 
 from time import sleep
-import pygetwindow as gw
-import keyboard
+from pywinctl import getActiveWindowTitle, getWindowsWithTitle
+from pynput.keyboard import Controller
+from stats import get_game_name
 
 # OPENCV NEEDS TO BE INSTALLED!
 
 KEY_COOLDOWN = 0.1
 
+keyboard = Controller()
+
 def switch_to_roblox_player() -> None:
     """
     Switches to the Roblox Player window.
     """
-    window = gw.getWindowsWithTitle("Roblox")[0]
+    game_name = get_game_name()
+    window = getWindowsWithTitle(game_name)[0]
 
-    if gw.getActiveWindowTitle() != "Roblox":
+    if getActiveWindowTitle() != game_name:
         window.activate()
     window.maximize()
 
@@ -24,18 +28,18 @@ def open_stats_window() -> None:
     """
     Attempts to open the stats window automatically.
     """
-    first_seq = ["backslash", "d", "d", "enter"]
+    first_seq = ["\\", "d", "d", "\n"]
 
     for key in first_seq:
         sleep(KEY_COOLDOWN)
-        keyboard.press_and_release(key)
+        keyboard.type(key)
 
 def exit_stats_window() -> None:
     """
     Attempts to close the stats window automatically.
     """
-    second_seq = ["d", "d", "enter", "backslash"]
+    second_seq = ["d", "d", "\n", "\\"]
 
     for key in second_seq:
         sleep(KEY_COOLDOWN)
-        keyboard.press_and_release(key)
+        keyboard.type(key)
