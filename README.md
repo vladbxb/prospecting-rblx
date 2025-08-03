@@ -11,6 +11,7 @@ Python script that automates shoveling and panning by simulating user input.
     - Backpack: when pressing backslash, the first thing highlighted is the "Open backpack (G)" text above the hotbar
 
 Make sure to choose which one's appropriate for you. In most cases the "shop" value should be ok. **Change this in** `constants.py`.
+
 3. Make sure to press tab in order to hide the player list from the top right corner of the screen (if you haven't already).
 4. Then, run `prospecting.py`!
 ## Caveats
