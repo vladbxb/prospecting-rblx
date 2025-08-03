@@ -40,7 +40,7 @@ def open_stats_window(keyboard: Controller) -> None:
     if UI_NAV_START == "shop":
         seq = ['\\', 'd', 'd', '\n']
     elif UI_NAV_START == "backpack":
-        seq = ['\\', 'w', 'd', '\n']
+        seq = ['\\', 'a', 'a', 'a', 'a', 'w', 'd', 'd', 's', 's', '\n']
     else:
         raise ConstantError("UI_NAV_START", UI_NAV_START)
 
@@ -56,7 +56,7 @@ def exit_stats_window(keyboard: Controller) -> None:
     if UI_NAV_START == "shop":
         seq = ['d', 'd', '\n', '\\']
     elif UI_NAV_START == "backpack":
-        seq = ['s', 'w', '\n', '\\']
+        seq = ['a', 'w', '\n', '\\']
     else:
         raise ConstantError("UI_NAV_START", UI_NAV_START)
 

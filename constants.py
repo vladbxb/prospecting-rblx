@@ -23,11 +23,11 @@ FILL_ANIM_BASE = 1.6
 WALK_DURATION = 0.5
 
 # Key cooldown for when reading stats (a bit of a cooldown is needed for the keys to register)
-KEY_COOLDOWN = 0.1
+KEY_COOLDOWN = 0.2
 
 # Where UI Navigation starts (see README)
-UI_NAV_START = "shop"
-#UI_NAV_START = "backpack"
+#UI_NAV_START = "shop"
+UI_NAV_START = "backpack"
 
 # How stats are read (automatically with image recognition or manual input)
 STATS_READ = "auto"
