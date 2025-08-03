@@ -4,6 +4,8 @@ Python script that automates shoveling and panning by simulating user input.
 [Prospecting! 💎](https://www.roblox.com/games/129827112113663/Prospecting)
 ## Installation
 [Install Python3](https://www.python.org/downloads/) and [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/#ensure-you-can-run-pip-from-the-command-line) on your machine. Then, run `pip install -r requirements.txt` in the main folder. You can also make a [virtual environment](https://docs.python.org/3/library/venv.html) and install the packages there, as to not interfere with your system's pip packages. [Creating a virtual environment might actually be needed if running on GNU/Linux and macOS, as to be able to run the script with sudo](https://pynput.readthedocs.io/en/latest/limitations.html). Running as superuser uses the system's pip packages, but this can be circumvented by running the python executable with elevated privileges from the virtual environment's `bin` folder.
+
+You must have [tesseract](https://github.com/tesseract-ocr/tesseract) installed and [added to PATH](https://stackoverflow.com/questions/9546324/adding-a-directory-to-the-path-environment-variable-in-windows). Installing on GNU/Linux or macOS via [Homebrew](https://brew.sh/) will add to PATH automatically so it should be enough.
 ## How to use
 1. Go to a shore, facing the water while being pretty close to it, while holding nothing and while on the ground (and not in the water, this is important).
 2. Enable UI Navigation (if it's not turned on already) in settings. **You need to check where the UI Navigation highlight starts by pressing backslash in the game**. From my testing, there are two places:
