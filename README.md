@@ -7,16 +7,17 @@ Python script that automates shoveling and panning by simulating user input.
 ## How to use
 1. Go to a shore, facing the water while being pretty close to it, while holding nothing and while on the ground (and not in the water, this is important).
 2. Enable UI Navigation (if it's not turned on already) in settings. **You need to check where the UI Navigation highlight starts by pressing backslash in the game**. From my testing, there are two places:
-    - Shop: when pressing backslash, the first thing highlighted is the shop button at the top of the screen
+    ~~- Shop: when pressing backslash, the first thing highlighted is the shop button at the top of the screen~~
     - Backpack: when pressing backslash, the first thing highlighted is the "Open backpack (G)" text above the hotbar
 
-Make sure to choose which one's appropriate for you. In most cases the "shop" value should be ok. **Change this in** `constants.py`.
+~~Make sure to choose which one's appropriate for you. In most cases the "shop" value should be ok.~~ **Change this in** `constants.py`.
+**UPDATE:** The game updated and the buttons are now on the right, so "backpack" seems to be the only good one.
 
 3. Make sure to press tab in order to hide the player list from the top right corner of the screen (if you haven't already).
 4. Then, run `prospecting.py`!
 ## Caveats
 - **For GNU/Linux users**, [Sober](https://sober.vinegarhq.org/) should be used. As of writing, this is the most reliable way of playing Roblox on GNU/Linux.
-- The way the script reads stats is a bit finnicky. Keep retrying until you start digging! That's when you know it's working. **If for some reason this just never works, you can change "STATS_READ" in** `constants.py` **to manual in order to manually input your statistics (you can find these by pressing the Stats button at the top of the screen). You will have to input these values in the console**.
+- The way the script reads stats is a bit finnicky. Keep retrying until you start digging! That's when you know it's working. **If for some reason this just never works, you can change "STATS_READ" in** `constants.py` **to manual in order to manually input your statistics (you can find these by pressing the Stats button on the right of the screen). You will have to input these values in the console**.
 - Starting the script in totem areas will work, however after the totem ends, the duration of the tasks will be out of sync, so restarting the script is needed in most cases.
 - The values provided as constants in the `constants.py` file are unfortunately not good for every framerate. These should be tweaked according to the performance of your hardware. **It is recommended to run the lowest graphics from Roblox settings**, as well turning off any additional effects from the Settings button on the top bar of the Prospecting game, while **enabling the Low Graphics mode**.
 - Sometimes macOS doesn't register the "1" key to equip the pan (for some reason). When it happens, just press it manually, it will work as if you pressed the button yourself instead of the script.
