@@ -26,3 +26,7 @@ WALK_TO_SHORE = 0.5
 
 # Key cooldown for when reading stats (a bit of a cooldown is needed for the keys to register)
 KEY_COOLDOWN = 0.1
+
+# Where UI Navigation starts (see README)
+# UI_NAV_START = "shop"
+UI_NAV_START = "backpack"

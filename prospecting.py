@@ -114,8 +114,7 @@ def main() -> None:
     Thread(target=focus_change, daemon=True).start()
     s = get_stats(keyboard)
     # Equip pan
-    keyboard.press('1')
-    keyboard.release('1')
+    keyboard.type('1')
     while True:
         sleep(1)
         farm(s['dig strength'], s['dig speed'], s['shake strength'],

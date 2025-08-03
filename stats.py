@@ -5,8 +5,11 @@ for stats is shown on screen
 
 from re import split
 from time import sleep
-from sys import platform
-from pytesseract import image_to_string
+import platform
+import os
+import tempfile
+from pathlib import Path
+import pytesseract
 from PIL import ImageGrab, Image
 from pywinctl import getActiveWindow
 import cv2
@@ -37,13 +40,21 @@ def image_to_string_preproc(im: Image) -> str:
     Preprocesses image with binarization
     to improve readings.
     """
+    # Switch temp directory to user directory in order to address macOS pytesseract bug
+    SAFE_TMP = pathlib.Path.home() / ".local" / "tmp" / "tesseract"
+    SAFE_TMP.mkdir(parents=True, exist_ok=True)
+
+    # Make Python and pytesseract use this directory for temp files
+    tempfile.tempdir = str(SAFE_TMP)
+
+    # Binarize the image with otsu threshold to improve recognition
     img_cv = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
     gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
     _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     if np.mean(binary) > 127:
         binary = cv2.bitwise_not(binary)
     img_rgb = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
-    return image_to_string(img_rgb, lang="eng", config="--psm 11")
+    return pytesseract.image_to_string(img_rgb, lang="eng", config="--psm 11")
 
 def get_pairs(im: Image) -> list[list]:
     """
@@ -81,7 +92,6 @@ def read_stats(keyboard: Controller) -> dict:
     """
     Reads the Prospecting stats from the Roblox Player window,
     assuming that they are present on screen
-    Takes a pynput keyboard Controller.
     """
     window_size = getActiveWindow()
 
@@ -104,7 +114,6 @@ def get_stats(keyboard: Controller) -> dict:
     """
     Attempts to read stats from the game window, and
     convert them into the expected format
-    Takes a pynput keyboard Controller.
     """
     gm.switch_to_roblox_player()
     gm.open_stats_window(keyboard)
@@ -115,11 +124,10 @@ def get_stats(keyboard: Controller) -> dict:
 
 def get_game_name() -> str:
     game_name = None
-    if platform == "linux" or platform == "linux2":
+    operating_system = platform.system()
+    if operating_system == "Linux":
         game_name = "Sober"
-    elif platform == "darwin":
-        game_name = "Roblox"
-    elif platform == "win32":
+    elif operating_system == "Darwin" or operating_system == "Windows":
         game_name = "Roblox"
     else:
         raise PlatformError

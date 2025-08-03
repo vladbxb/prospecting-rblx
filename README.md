@@ -7,12 +7,14 @@ Python script that automates shoveling and panning by simulating user input.
 ## How to use
 1. Go to a shore, facing the water while being pretty close to it, while holding nothing and while on the ground (and not in the water, this is important).
 2. Enable UI Navigation (if it's not turned on already) in settings.
-3. Then, run `prospecting.py`!
+3. Make sure to press tab in order to hide the player list from the top right corner of the screen (if you haven't already).
+4. Then, run `prospecting.py`!
 ## Caveats
 - **For GNU/Linux users**, [Sober](https://sober.vinegarhq.org/) should be used. As of writing, this is the most reliable way of playing Roblox on GNU/Linux.
 - The way the script reads stats is a bit finnicky. Keep retrying until you start digging! That's when you know it's working.
 - Starting the script in totem areas will work, however after the totem ends, the duration of the tasks will be out of sync, so restarting the script is needed in most cases.
 - The values provided as constants in the `constants.py` file are unfortunately not good for every framerate. These should be tweaked according to the performance of your hardware. **It is recommended to run the lowest graphics from Roblox settings**, as well turning off any additional effects from the Settings button on the top bar of the Prospecting game, while **enabling the Low Graphics mode**.
+- Sometimes macOS doesn't register the "1" key to equip the pan (for some reason). When it happens, just press it manually, it will work as if you pressed the button yourself instead of the script.
 ## How does it work?
 Some timers are deduced from the user stats. The script simulates holding click and keypresses, calculates window coordinates and converts the stats' image data into text. The algorithm is as follows:
 - Assume player is on the shore and facing the water
