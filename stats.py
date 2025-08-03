@@ -6,7 +6,6 @@ for stats is shown on screen
 from re import split
 from time import sleep
 import platform
-import os
 import tempfile
 from pathlib import Path
 import pytesseract
@@ -26,6 +25,13 @@ def is_percentage(number: str) -> bool:
     """
     return number.isnumeric() or (number[:-1].isnumeric() and number[-1] == '%')
 
+def parse_percentage(number: str) -> float:
+    """
+    Takes in a string formatted as a decimal number or one with a percentage sign,
+    and converts it into a float.
+    """
+    return float(number) if number[-1] != '%' else int(number[:-1]) / 100
+
 def is_stat(stat: str) -> bool:
     """
     Checks whether the string is a predefined stat in the game.
@@ -41,11 +47,11 @@ def image_to_string_preproc(im: Image) -> str:
     to improve readings.
     """
     # Switch temp directory to user directory in order to address macOS pytesseract bug
-    SAFE_TMP = pathlib.Path.home() / ".local" / "tmp" / "tesseract"
-    SAFE_TMP.mkdir(parents=True, exist_ok=True)
+    safe_tmp = Path.home() / ".local" / "tmp" / "tesseract"
+    safe_tmp.mkdir(parents=True, exist_ok=True)
 
     # Make Python and pytesseract use this directory for temp files
-    tempfile.tempdir = str(SAFE_TMP)
+    tempfile.tempdir = str(safe_tmp)
 
     # Binarize the image with otsu threshold to improve recognition
     img_cv = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
@@ -73,8 +79,8 @@ def generate_dict(pairs: list[list]) -> dict:
     for pair in pairs:
         if len(pair) == 2 and is_stat(pair[0]) and is_stat(pair[1]):
             x = pair[0].lower()
-            y = pair[1] if pair[1][-1] != '%' else str(int(pair[1][:-1]) / 100)
-            stats[x] = float(y)
+            y = parse_percentage(pair[1])
+            stats[x] = y
     return stats
 
 def acquired_stats(stats: dict) -> bool:
@@ -91,7 +97,7 @@ def acquired_stats(stats: dict) -> bool:
 def read_stats(keyboard: Controller) -> dict:
     """
     Reads the Prospecting stats from the Roblox Player window,
-    assuming that they are present on screen
+    assuming that they are present on screen.
     """
     window_size = getActiveWindow()
 
@@ -113,7 +119,7 @@ def read_stats(keyboard: Controller) -> dict:
 def get_stats(keyboard: Controller) -> dict:
     """
     Attempts to read stats from the game window, and
-    convert them into the expected format
+    convert them into the expected format.
     """
     gm.switch_to_roblox_player()
     gm.open_stats_window(keyboard)
@@ -122,7 +128,41 @@ def get_stats(keyboard: Controller) -> dict:
     gm.exit_stats_window(keyboard)
     return stats
 
+def get_stats_manual() -> dict:
+    """
+    Gets the stats by user input from the terminal.
+    """
+    stats = dict()
+
+    print("Please switch to the game and insert your player's statistics", end="")
+    print(" (check this easily with the Stats button at the top)")
+
+    print('Dig Strength: ', end='')
+    stats['dig strength'] = parse_percentage(input())
+
+    print('Dig Speed: ', end='')
+    stats['dig speed'] = parse_percentage(input())
+
+    print('Shake Strength: ', end='')
+    stats['shake strength'] = parse_percentage(input())
+
+    print('Shake Speed: ', end='')
+    stats['shake speed'] = parse_percentage(input())
+
+    print('Capacity: ', end='')
+    stats['capacity'] = parse_percentage(input())
+
+    print("You have inserted all of the statistics. Press enter to proceed.")
+
+    _ = input()
+
+    return stats
+
 def get_game_name() -> str:
+    """
+    Returns the title of the game's window
+    depending on the operating system used.
+    """
     game_name = None
     operating_system = platform.system()
     if operating_system == "Linux":

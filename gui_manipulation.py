@@ -4,10 +4,12 @@ Module for manipulating the game's GUI elements.
 
 from time import sleep
 import platform
+from sys import exit
 from pywinctl import getActiveWindowTitle, getWindowsWithTitle
 from stats import get_game_name
 from pynput.keyboard import Controller
 from constants import KEY_COOLDOWN, UI_NAV_START
+from exceptions import ConstantError
 
 # OPENCV NEEDS TO BE INSTALLED!
 
@@ -18,15 +20,17 @@ def switch_to_roblox_player() -> None:
     game_name = get_game_name()
     try:
         window = getWindowsWithTitle(game_name)[0]
-    except:
+        if getActiveWindowTitle() != game_name:
+            window.activate()
+        window.maximize()
+    except IndexError:
         if platform.system() == "Darwin":
-            print("No game window was found or Roblox window is maximized! Please launch the game or unmaximize the Roblox window and try again.")
+            print("No game window was found or Roblox window is maximized! ", end="")
+            print("Please launch the game or unmaximize the Roblox window and try again.")
         else:
             print("No game window was found! Please launch the game.")
+        exit(1)
 
-    if getActiveWindowTitle() != game_name:
-        window.activate()
-    window.maximize()
 
 def open_stats_window(keyboard: Controller) -> None:
     """
@@ -38,7 +42,7 @@ def open_stats_window(keyboard: Controller) -> None:
     elif UI_NAV_START == "backpack":
         seq = ['\\', 'w', 'd', '\n']
     else:
-        raise SequenceError(UI_NAV_START)
+        raise ConstantError("UI_NAV_START", UI_NAV_START)
 
     for key in seq:
         sleep(KEY_COOLDOWN)
@@ -54,7 +58,7 @@ def exit_stats_window(keyboard: Controller) -> None:
     elif UI_NAV_START == "backpack":
         seq = ['s', 'w', '\n', '\\']
     else:
-        raise SequenceError(UI_NAV_START)
+        raise ConstantError("UI_NAV_START", UI_NAV_START)
 
     for key in seq:
         sleep(KEY_COOLDOWN)

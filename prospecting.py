@@ -13,11 +13,12 @@ from time import sleep
 import pynput
 from pywinctl import getActiveWindow, getActiveWindowTitle
 from gui_manipulation import switch_to_roblox_player
-from stats import get_stats, get_game_name
+from stats import get_stats, get_stats_manual, get_game_name
 from constants import *
+from exceptions import ConstantError
+
 
 # Mouse and keyboard for pynput
-
 mouse = pynput.mouse.Controller()
 keyboard = pynput.keyboard.Controller()
 
@@ -83,14 +84,14 @@ def farm(dig_strength, dig_speed, shake_strength, shake_speed, capacity) -> None
 
     # Walk in the water
     keyboard.press('w')
-    sleep(WALK_IN_WATER)
+    sleep(WALK_DURATION)
     keyboard.release('w')
 
     empty_pan(shake_strength, shake_speed, capacity)
 
     # Walk back to shore
     keyboard.press('s')
-    sleep(WALK_TO_SHORE)
+    sleep(WALK_DURATION)
     keyboard.release('s')
 
 def focus_change() -> None:
@@ -110,10 +111,16 @@ def main() -> None:
     """
     Initializes farming sequence and loops it.
     """
+    if STATS_READ == "auto":
+        s = get_stats(keyboard)
+    elif STATS_READ == "manual":
+        s = get_stats_manual()
+    else:
+        raise ConstantError("STATS_READ", STATS_READ)
     init_farm()
     Thread(target=focus_change, daemon=True).start()
-    s = get_stats(keyboard)
     # Equip pan
+    sleep(1)
     keyboard.type('1')
     while True:
         sleep(1)

@@ -11,7 +11,6 @@ INIT_COOLDOWN = 2
 
 # Panning values
 SHAKE_DURATION_BASE = 0.4
-
 EMPTYING_START = 0.5
 EMPTYING_COOLDOWN = 2
 
@@ -20,13 +19,16 @@ FILL_BASE = 0.65
 PERFECT_HIT_BASE = 1.5
 FILL_ANIM_BASE = 1.6
 
-# Walking values
-WALK_IN_WATER = 0.5
-WALK_TO_SHORE = 0.5
+# Walking durations
+WALK_DURATION = 0.5
 
 # Key cooldown for when reading stats (a bit of a cooldown is needed for the keys to register)
 KEY_COOLDOWN = 0.1
 
 # Where UI Navigation starts (see README)
-# UI_NAV_START = "shop"
-UI_NAV_START = "backpack"
+UI_NAV_START = "shop"
+#UI_NAV_START = "backpack"
+
+# How stats are read (automatically with image recognition or manual input)
+STATS_READ = "auto"
+#STATS_READ = "manual"

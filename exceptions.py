@@ -13,9 +13,9 @@ class StatsError(Exception):
     def __init__(self):
         super().__init__("All of the needed stats have not been read successfully!")
 
-class SequenceError(Exception):
+class ConstantError(Exception):
     """
     Exception raised for reading stats unsuccessfully.
     """
-    def __init__(self, ui_start_str):
-        super().__init__(f"The chosen UI_NAV_START value is unavailable: {ui_start_str}")
+    def __init__(self, variable, value):
+        super().__init__(f"The chosen {variable} value is unavailable: {value}")
