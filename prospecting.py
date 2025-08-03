@@ -10,8 +10,6 @@ from os import _exit
 from sys import exit as sys_exit
 from threading import Thread
 from time import sleep
-# import mouse
-# import keyboard
 import pynput
 from pywinctl import getActiveWindow, getActiveWindowTitle
 from gui_manipulation import switch_to_roblox_player
@@ -114,7 +112,7 @@ def main() -> None:
     """
     init_farm()
     Thread(target=focus_change, daemon=True).start()
-    s = get_stats()
+    s = get_stats(keyboard)
     # Equip pan
     keyboard.press('1')
     keyboard.release('1')

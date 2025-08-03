@@ -7,11 +7,13 @@ from re import split
 from time import sleep
 from sys import platform
 from pytesseract import image_to_string
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 from pywinctl import getActiveWindow
 import cv2
 import numpy as np
+from pynput.keyboard import Controller
 import gui_manipulation as gm
+from exceptions import *
 
 
 def is_percentage(number: str) -> bool:
@@ -21,7 +23,7 @@ def is_percentage(number: str) -> bool:
     """
     return number.isnumeric() or (number[:-1].isnumeric() and number[-1] == '%')
 
-def is_stat(stat) -> bool:
+def is_stat(stat: str) -> bool:
     """
     Checks whether the string is a predefined stat in the game.
     This is used for catching possibly bad input data.
@@ -30,7 +32,7 @@ def is_stat(stat) -> bool:
                   'toughness', 'shake strength', 'shake speed', 'size boost']
     return stat.lower() in stat_names or is_percentage(stat)
 
-def image_to_string_preproc(im) -> str:
+def image_to_string_preproc(im: Image) -> str:
     """
     Preprocesses image with binarization
     to improve readings.
@@ -43,7 +45,7 @@ def image_to_string_preproc(im) -> str:
     img_rgb = cv2.cvtColor(binary, cv2.COLOR_GRAY2RGB)
     return image_to_string(img_rgb, lang="eng", config="--psm 11")
 
-def get_pairs(im) -> list[list]:
+def get_pairs(im: Image) -> list[list]:
     """
     Returns the read image data into a list of lists format.
     """
@@ -52,7 +54,7 @@ def get_pairs(im) -> list[list]:
     pairs = [split(r': ', x) for x in data]
     return pairs
 
-def generate_dict(pairs) -> dict:
+def generate_dict(pairs: list[list]) -> dict:
     """
     Generates the dictionary based off of a list of lists of length 2.
     """
@@ -64,21 +66,22 @@ def generate_dict(pairs) -> dict:
             stats[x] = float(y)
     return stats
 
-def acquired_stats(stats) -> bool:
+def acquired_stats(stats: dict) -> bool:
     """
     Checks whether all of the required stats are present in the read stats.
     """
     required_stat_names = ['dig strength', 'capacity', 'dig speed', 'shake strength', 'shake speed']
     for stat in required_stat_names:
         if stat not in stats.keys():
-            print(f"missing stat: {stat}")
+            print(f"Missing stat: {stat}")
             return False
     return True
 
-def read_stats() -> dict:
+def read_stats(keyboard: Controller) -> dict:
     """
     Reads the Prospecting stats from the Roblox Player window,
     assuming that they are present on screen
+    Takes a pynput keyboard Controller.
     """
     window_size = getActiveWindow()
 
@@ -92,30 +95,32 @@ def read_stats() -> dict:
     stats = generate_dict(pairs)
 
     if not acquired_stats(stats):
-        gm.exit_stats_window()
-        raise RuntimeError("All of the needed stats have not been read successfully!")
+        gm.exit_stats_window(keyboard)
+        raise StatsError
 
     return stats
 
-def get_stats() -> dict:
+def get_stats(keyboard: Controller) -> dict:
     """
     Attempts to read stats from the game window, and
     convert them into the expected format
+    Takes a pynput keyboard Controller.
     """
     gm.switch_to_roblox_player()
-    gm.open_stats_window()
+    gm.open_stats_window(keyboard)
     sleep(1)
-    stats = read_stats()
-    gm.exit_stats_window()
+    stats = read_stats(keyboard)
+    gm.exit_stats_window(keyboard)
     return stats
 
-def get_game_name() -> str | None:
-    GAME_NAME = None
-
+def get_game_name() -> str:
+    game_name = None
     if platform == "linux" or platform == "linux2":
-        GAME_NAME = "Sober"
+        game_name = "Sober"
     elif platform == "darwin":
-        GAME_NAME = "Roblox"
+        game_name = "Roblox"
     elif platform == "win32":
-        GAME_NAME = "Roblox"
-    return GAME_NAME
+        game_name = "Roblox"
+    else:
+        raise PlatformError
+    return game_name
